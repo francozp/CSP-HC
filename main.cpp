@@ -9,7 +9,7 @@ int main()
 {
     int cont = 0;
     int clase = 0;
-    int num_classes, num_options;
+    int num_vehicles, num_classes, num_options;
     int detail;
     ifstream inFile;
     inFile.open("Instancias/test1.txt");
@@ -17,11 +17,12 @@ int main()
         cout << "Unable to open file";
         exit(1);
     }
+    inFile >> num_vehicles;
     inFile >> num_options;
     inFile >> num_classes;
-    vector<vector<int> > classes(num_classes, vector<int>(num_options+1));   
-    vector<int> carsBlock;
-    vector<int> blockSize;
+    vector<vector<int>> classes(num_classes, vector<int>(num_options + 1));   
+    vector<int> carsBlock(num_options);
+    vector<int> blockSize(num_options);
     while(cont < num_options){
         inFile >> detail;
         carsBlock.push_back(detail);
@@ -33,18 +34,18 @@ int main()
         blockSize.push_back(detail);
         cont++;
     }
-    clase = 0;
+    clase = -1;
     cont = num_options + 1;
     while(inFile >> detail){
         if(cont != num_options + 1){
             classes[clase][cont] = detail;
             cont++;
-        }
-        else{
+        }   
+        else{   
             cont = 0;
             clase++;
         }
     }
-    cout << classes[2][0];
+
     return 0;
 }
