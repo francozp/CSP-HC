@@ -2,11 +2,41 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <stdlib.h>
 #include <iomanip>
+#include <algorithm>
+#include <random>
+#include <time.h>
 using namespace std;
 
-int main()
+vector<int> gen_initial_solution(vector<vector<int>> classes,int num_classes, int num_vehicles){
+    srand(time(NULL));
+    vector<int> initialsol;
+    int cont = 0;
+    int cont1 = 0;
+    int cars;
+    while(cont < num_classes){
+        cars = classes[cont][0];
+        cont1 = 0;
+        while(cont1 < cars){
+            initialsol.push_back(cont);
+            cont1++;
+        }
+        cont++;
+    }
+    random_shuffle(initialsol.begin(), initialsol.end());
+    return initialsol;
+}
+
+float eval(vector<int> blockSize, vector<int> carsBlock, int num_vehicles, int num_options, int num_classes)
 {
+    int eval;
+    return eval;
+}
+
+int main()
+{   
+    vector<int> initial_sol;
     int cont = 0;
     int clase = 0;
     int num_vehicles, num_classes, num_options;
@@ -46,6 +76,11 @@ int main()
             clase++;
         }
     }
-
+    initial_sol = gen_initial_solution(classes, num_classes, num_vehicles);
+    cont= 0;
+    while(cont < num_vehicles){
+        cout << initial_sol[cont];
+        cont++;
+    }
     return 0;
 }
