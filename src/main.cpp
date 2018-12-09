@@ -28,9 +28,13 @@ vector<int> gen_initial_solution(vector<vector<int>> classes,int num_classes, in
     return initialsol;
 }
 
-float eval(vector<int> blockSize, vector<int> carsBlock, int num_vehicles, int num_options, int num_classes)
+float eval(vector<int> solution, vector<int> blockSize, vector<int> carsBlock, int num_vehicles, int num_options, int num_classes)
 {
     int eval;
+    vector <int> iter(num_vehicles, 0);
+    for(int i = 0; i < num_vehicles; i++){
+        iter[solution[i]] += 1;
+    }
     return eval;
 }
 
