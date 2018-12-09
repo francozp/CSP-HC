@@ -9,14 +9,14 @@
 #include <time.h>
 using namespace std;
 
-vector<int> gen_initial_solution(vector<vector<int>> classes,int num_classes, int num_vehicles){
+vector<int> gen_initial_solution(vector<int> carsQty,int num_classes){
     srand(time(NULL));
     vector<int> initialsol;
     int cont = 0;
     int cont1 = 0;
     int cars;
     while(cont < num_classes){
-        cars = classes[cont][0];
+        cars = carsQty[cont];
         cont1 = 0;
         while(cont1 < cars){
             initialsol.push_back(cont);
@@ -28,12 +28,18 @@ vector<int> gen_initial_solution(vector<vector<int>> classes,int num_classes, in
     return initialsol;
 }
 
-float eval(vector<int> solution, vector<int> blockSize, vector<int> carsBlock, int num_vehicles, int num_options, int num_classes)
+int eval(vector<int> solution, vector<int> options, vector<int> blockSize, vector<int> carsBlock, int num_vehicles, int num_options, int num_classes) // Funcion para evaluar calidad de solucion
 {
-    int eval;
-    vector <int> iter(num_vehicles, 0);
-    for(int i = 0; i < num_vehicles; i++){
-        iter[solution[i]] += 1;
+    int eval = 0;
+    int windowSize;
+    int iter = 0;
+    for(int i = 0; i < num_options; i++){ //iterar sobre las distintas opciones
+        windowSize = blockSize[i]; // tamaño de la ventana para la opcion i
+        for(int j = 0; j < num_vehicles; j++){ //comienzo de la ventana
+            for(int k = j; k < j + windowSize; k++){ //movimiento por la ventana
+                iter += options[solution[j]]; //opciones de la clase=
+            }
+        }
     }
     return eval;
 }
@@ -54,7 +60,8 @@ int main()
     inFile >> num_vehicles;
     inFile >> num_options;
     inFile >> num_classes;
-    vector<vector<int>> classes(num_classes, vector<int>(num_options + 1));   
+    vector<vector<int>> options(num_classes, vector<int>(num_options));
+    vector<int> carsQty;
     vector<int> carsBlock(num_options);
     vector<int> blockSize(num_options);
     while(cont < num_options){
@@ -72,7 +79,12 @@ int main()
     cont = num_options + 1;
     while(inFile >> detail){
         if(cont != num_options + 1){
-            classes[clase][cont] = detail;
+            if(cont==0){
+                carsQty.push_back(detail);
+            }
+            else{
+                options[clase][cont] = detail;
+            }
             cont++;
         }   
         else{   
@@ -80,7 +92,7 @@ int main()
             clase++;
         }
     }
-    initial_sol = gen_initial_solution(classes, num_classes, num_vehicles);
+    initial_sol = gen_initial_solution(carsQty, num_classes);
     cont= 0;
     while(cont < num_vehicles){
         cout << initial_sol[cont];
