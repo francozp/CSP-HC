@@ -28,28 +28,50 @@ vector<int> gen_initial_solution(vector<int> carsQty,int num_classes){
     return initialsol;
 }
 
-int eval(vector<int> solution,  vector<vector<int>> options, vector<int> blockSize, vector<int> carsBlock, int num_vehicles, int num_options) // Funcion para evaluar calidad de solucion
+int eval(vector<int> &solution,  vector<vector<int>> options, vector<int> blockSize, vector<int> carsBlock, int num_vehicles, int num_options) // Funcion para evaluar calidad de solucion
 {
     int eval = 0;
     int windowSize;
     int iter;
     for(int i = 0; i < num_options; i++){ //iterar sobre las distintas opciones
         windowSize = blockSize[i]; // tamaño de la ventana para la opcion i
-        iter = 0;
         for(int j = 0; j < num_vehicles; j++){ //comienzo de la ventana
+            iter = 0;
             for(int k = j; k < j + windowSize && k < num_vehicles; k++){ //movimiento por la ventana
                 iter += options[solution[k]][i]; //opciones de la clase=
-            }
-            if(iter > carsBlock[i]){
-                eval++;
+                if(iter > carsBlock[i]){
+                    eval++;
+                }
             }
         }
     }
     return eval;
 }
 
-int neighbor(vector<int> solution, int Position, int nextPosition){
+void neighbor(vector<int> solution, int Position, int nextPosition){
     iter_swap(solution.begin() + Position,solution.begin()+ nextPosition);
+}
+
+vector<int> climbing(int actual_eval, vector<int> &solution,  vector<vector<int>> options, vector<int> blockSize, vector<int> carsBlock, int num_vehicles, int num_options){
+    int min = actual_eval;
+    int neighbor_eval;
+    vector<int> bestClimb;
+    for(int i = 0; i < num_vehicles - 1; i++){
+        iter_swap(solution.begin() + i,solution.begin()+ i + 1);
+        neighbor_eval = eval(solution,options, blockSize, carsBlock, num_vehicles, num_options);
+        if(neighbor_eval <= min){
+            min = neighbor_eval;
+            bestClimb = solution;
+        }
+        iter_swap(solution.begin() + i,solution.begin()+ i + 1);
+    } 
+    int cont = 0;
+    while(cont < num_vehicles){
+        cout << bestClimb[cont];
+        cont++;
+    }
+    cout << "\n";
+    return bestClimb;
 }
 
 int main()
@@ -68,7 +90,10 @@ int main()
     inFile >> num_vehicles;
     inFile >> num_options;
     inFile >> num_classes;
-    vector<vector<int>> options(num_classes, vector<int>(num_options));
+    vector<vector<int>> options;
+    for(int i = 0; i < num_classes; i++){
+        options.push_back(vector<int>());
+    }
     vector<int> carsQty;
     vector<int> carsBlock;
     vector<int> blockSize;
@@ -92,7 +117,7 @@ int main()
                 carsQty.push_back(detail);
             }
             else{
-                options[clase][cont] = detail;
+                options[clase].push_back(detail);
             }
             cont++;
         }   
@@ -107,6 +132,12 @@ int main()
         cout << initial_sol[cont];
         cont++;
     }*/
-    cout << eval(initial_sol, options, blockSize, carsBlock, num_vehicles, num_options);
+    int actual_eval = eval(initial_sol, options, blockSize, carsBlock, num_vehicles, num_options);
+    cout << actual_eval << "\n";
+    for(int k=0; k < 10; k++){
+        initial_sol = climbing(actual_eval,initial_sol, options, blockSize, carsBlock, num_vehicles, num_options);
+        actual_eval = eval(initial_sol, options, blockSize, carsBlock, num_vehicles, num_options);
+    }
+    cout << eval(initial_sol,options, blockSize, carsBlock, num_vehicles, num_options);
     return 0;
 }
