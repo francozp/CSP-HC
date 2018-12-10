@@ -28,20 +28,28 @@ vector<int> gen_initial_solution(vector<int> carsQty,int num_classes){
     return initialsol;
 }
 
-int eval(vector<int> solution, vector<int> options, vector<int> blockSize, vector<int> carsBlock, int num_vehicles, int num_options, int num_classes) // Funcion para evaluar calidad de solucion
+int eval(vector<int> solution,  vector<vector<int>> options, vector<int> blockSize, vector<int> carsBlock, int num_vehicles, int num_options) // Funcion para evaluar calidad de solucion
 {
     int eval = 0;
     int windowSize;
-    int iter = 0;
+    int iter;
     for(int i = 0; i < num_options; i++){ //iterar sobre las distintas opciones
         windowSize = blockSize[i]; // tamaño de la ventana para la opcion i
+        iter = 0;
         for(int j = 0; j < num_vehicles; j++){ //comienzo de la ventana
-            for(int k = j; k < j + windowSize; k++){ //movimiento por la ventana
-                iter += options[solution[j]]; //opciones de la clase=
+            for(int k = j; k < j + windowSize && k < num_vehicles; k++){ //movimiento por la ventana
+                iter += options[solution[k]][i]; //opciones de la clase=
+            }
+            if(iter > carsBlock[i]){
+                eval++;
             }
         }
     }
     return eval;
+}
+
+int neighbor(vector<int> solution, int Position, int nextPosition){
+    iter_swap(solution.begin() + Position,solution.begin()+ nextPosition);
 }
 
 int main()
@@ -62,8 +70,8 @@ int main()
     inFile >> num_classes;
     vector<vector<int>> options(num_classes, vector<int>(num_options));
     vector<int> carsQty;
-    vector<int> carsBlock(num_options);
-    vector<int> blockSize(num_options);
+    vector<int> carsBlock;
+    vector<int> blockSize;
     while(cont < num_options){
         inFile >> detail;
         carsBlock.push_back(detail);
@@ -75,6 +83,7 @@ int main()
         blockSize.push_back(detail);
         cont++;
     }
+    cout << "\n";
     clase = -1;
     cont = num_options + 1;
     while(inFile >> detail){
@@ -94,9 +103,10 @@ int main()
     }
     initial_sol = gen_initial_solution(carsQty, num_classes);
     cont= 0;
-    while(cont < num_vehicles){
+    /*while(cont < num_vehicles){
         cout << initial_sol[cont];
         cont++;
-    }
+    }*/
+    cout << eval(initial_sol, options, blockSize, carsBlock, num_vehicles, num_options);
     return 0;
 }
