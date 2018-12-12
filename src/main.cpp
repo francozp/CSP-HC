@@ -23,14 +23,16 @@ int main()
     int bestEval;
     pair<vector<int>, int> hc;
     int restart = RESTART;
-    int cont = 0;
-    int clase = 0;
+    int cont;
+    int clase;
     int num_vehicles, num_classes, num_options;
     int detail;
     string archivos[12] = {"Problem 60-10","Problem 65-04","Problem 65-09","Problem 70-03","Problem 75-08","Problem 80-01","Problem 80-02","Problem 85-05","Problem 90-01","Problem 90-04","Problem 90-07","Problem 90-10"};
     ifstream inFile;
     int arch = 0;
     while(arch < 12){
+        cont = 0;
+        clase = 0;
         inFile.open("Instances/" + archivos[arch] + ".txt");
         if (!inFile){
             cout << "Unable to open file";
