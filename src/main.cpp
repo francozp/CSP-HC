@@ -13,11 +13,10 @@ using namespace std;
 //Parámetros
 #define RESTART 100;
 #define INSTANCIANAME "Problem Test";
+
 int main()
 {   
-    unsigned t0, t1;
-    t0=clock();
-    srand(time(NULL));
+    srand (time(NULL));
     vector<int> bestSolution;
     string instancia = INSTANCIANAME;
     int bestEval;
@@ -35,37 +34,38 @@ int main()
         cout << "Unable to open file";
         exit(1);
     }
+
+    //Lectura del archivo
     inFile >> num_vehicles;
     inFile >> num_options;
     inFile >> num_classes;
     vector<vector<int>> options;
-    for(int i = 0; i < num_classes; i++){
-        options.push_back(vector<int>());
+    for(int i = 0; i < num_classes; i++){ 
+        options.push_back(vector<int>()); //crear vector de opciones
     }
     vector<int> carsQty;
     vector<int> carsBlock;
     vector<int> blockSize;
     while(cont < num_options){
         inFile >> detail;
-        carsBlock.push_back(detail);
+        carsBlock.push_back(detail); //crear vector de autos x bloque
         cont++;
     }
     cont = 0;
     while(cont < num_options){
         inFile >> detail;
-        blockSize.push_back(detail);
+        blockSize.push_back(detail); //crear vector de tamaño del bloque
         cont++;
     }
-    cout << "\n";
     clase = -1;
     cont = num_options + 1;
-    while(inFile >> detail){
+    while(inFile >> detail){ 
         if(cont != num_options + 1){
             if(cont==0){
-                carsQty.push_back(detail);
+                carsQty.push_back(detail); //crear vectores de cantidad de autos por clase
             }
             else{
-                options[clase].push_back(detail);
+                options[clase].push_back(detail); //asignar valores al vector de opciones
             }
             cont++;
         }   
@@ -75,14 +75,12 @@ int main()
         }
     }
     inFile.close();
-    ofstream myfile;
-    restart = RESTART;
     hc = HillClimbing(options, blockSize, carsBlock,num_vehicles, num_options, carsQty, num_classes);
     bestSolution = hc.first;
     bestEval = hc.second;
-    while(restart){
-        hc = HillClimbing(options, blockSize, carsBlock,num_vehicles, num_options, carsQty, num_classes);
-        if(hc.second < bestEval){
+    while(restart){ // repetir el algoritmo la cantidad de veces especificadas
+        hc = HillClimbing(options, blockSize, carsBlock,num_vehicles, num_options, carsQty, num_classes); //hacer hill climbing 
+        if(hc.second < bestEval){ //seleccionar la mejor solucion
             bestSolution = hc.first;
             bestEval = hc.second;
         }
@@ -91,8 +89,8 @@ int main()
     int cont1 = 0;
     cont = 0;
     ofstream outputFile;
-    outputFile.open ("INSTANCIA.out");
-    while(cont < num_vehicles){
+    outputFile.open ("INSTANCIA.out"); //archivo sobre el que se ecribiran los resultados
+    while(cont < num_vehicles){ //escribir el output
         outputFile << to_string(bestSolution[cont]) + "  ";
         cont1 = 0;
         while(cont1 < num_options){
